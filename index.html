@@ -18,7 +18,10 @@
             <div class="grid grid-cols-3 gap-2">
                 <div v-for="(row, rowIndex) in boardCells">
                     <div v-for="(cell, colIndex) in row" @click="cellClicked(rowIndex, colIndex)"
-                        class="w-30 h-30 flex items-center justify-center bg-blue-300 text-2xl font-bold cursor-pointer mt-2 hover:bg-blue-400">
+                        class="w-30 h-30 flex items-center justify-center bg-blue-300 text-2xl font-bold cursor-pointer mt-2 hover:bg-blue-400"
+                        :class="{
+                        'text-red-500': cell === 'X',
+                        'text-blue-500': cell === 'O'}">
                         {{cell}}
                     </div>
 
@@ -26,10 +29,10 @@
 
             </div>
 
-            <p v-if="winner" class="text-2xl font-bold mt-5 text-green-600">
-                player {{winner}} Wins !
+            <!-- <p class="mb-3 text-center mt-5">player {{currentPlayer}} turn </p> -->
+            <p class="text-2xl font-bold mt-5 text-white">
+                {{message}}
             </p>
-            <p class="mb-3 text-center mt-5">player {{currentPlayer}} turn </p>
             <button @click="resetGame" class="bg-blue-500 text-white px-5 rounded mt-3">
                 Restart
 
@@ -52,7 +55,7 @@
                         ["", "", ""]
                     ],
                     currentPlayer: "X",
-
+                    message: "Let's start!",
                     winner: ""
 
                 }
@@ -60,29 +63,48 @@
             methods: {
 
                 cellClicked(row, col) {
-                    if (this.boardCells[row][col] !== "") {
+                    if (this.boardCells[row][col] !== "" || this.winner) {
                         return;
                     }
-
-                    if (this.winner !== "") {
-                        return;
-
-                    }
-
                     this.boardCells[row][col] = this.currentPlayer;
 
-
-                    if (this.CheckWinner()) {
+                    if (this.isWinner(this.currentPlayer)) {
                         this.winner = this.currentPlayer;
-                        return;
+                        this.message = `Player ${this.winner} win!`
+                    } else {
+                        this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
+                        this.message = `Player ${this.currentPlayer}'s turn`
                     }
 
-                    this.currentPlayer = this.currentPlayer === "X" ? "0" : "X";
                 },
 
-
-
-
+                isWinner(user) {
+                    for (let row = 0; row < this.boardCells.length; row++) {
+                        if (this.boardCells[row][0] == user
+                            && this.boardCells[row][1] == user
+                            && this.boardCells[row][2] == user) {
+                            return true;
+                        }
+                    }
+                    for (let col = 0; col < this.boardCells.length; col++) {
+                        if (this.boardCells[0][col] == user
+                            && this.boardCells[1][col] == user
+                            && this.boardCells[2][col] == user) {
+                            return true;
+                        }
+                    }
+                    if (this.boardCells[0][0] == user
+                        && this.boardCells[1][1] == user
+                        && this.boardCells[2][2] == user) {
+                        return true;
+                    }
+                    if (this.boardCells[0][2] == user
+                        && this.boardCells[1][1] == user
+                        && this.boardCells[2][0] == user) {
+                        return true;
+                    }
+                    return false;
+                },
 
                 resetGame() {
 
