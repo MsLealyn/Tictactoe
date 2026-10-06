@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> TIC-TOC TOE</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div
+            class="flex flex-col justify-center items-center h-screen bg-[url('https://i.pinimg.com/originals/ce/6f/7f/ce6f7ffd885e477efa2110437ab779dd.gif')] bg-center bg-cover">
+            <h1 class="text-3xl font-bold mb-4 text-center"> Tic tac toe</h1>
+
+            <div class="grid grid-cols-3 gap-2">
+                <div v-for="(row, rowIndex) in boardCells">
+                    <div v-for="(cell, colIndex) in row" @click="cellClicked(rowIndex, colIndex)"
+                        class="w-30 h-30 flex items-center justify-center bg-blue-300 text-2xl font-bold cursor-pointer mt-2 hover:bg-blue-400">
+                        {{cell}}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <p v-if="winner" class="text-2xl font-bold mt-5 text-green-600">
+                player {{winner}} Wins !
+            </p>
+            <p class="mb-3 text-center mt-5">player {{currentPlayer}} turn </p>
+            <button @click="resetGame" class="bg-blue-500 text-white px-5 rounded mt-3">
+                Restart
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+    <script>
+
+        Vue.createApp({
+            data() {
+                return {
+
+                    boardCells: [
+                        ["", "", ""],
+                        ["", "", ""],
+                        ["", "", ""]
+                    ],
+                    currentPlayer: "X",
+
+                    winner: ""
+
+                }
+            },
+            methods: {
+
+                cellClicked(row, col) {
+                    if (this.boardCells[row][col] !== "") {
+                        return;
+                    }
+
+                    if (this.winner !== "") {
+                        return;
+
+                    }
+
+                    this.boardCells[row][col] = this.currentPlayer;
+
+
+                    if (this.CheckWinner()) {
+                        this.winner = this.currentPlayer;
+                        return;
+                    }
+
+                    this.currentPlayer = this.currentPlayer === "X" ? "0" : "X";
+                },
+
+
+
+
+
+                resetGame() {
+
+                    this.boardCells = [
+                        ["", "", ""],
+                        ["", "", ""],
+                        ["", "", ""]
+                    ]
+
+                    this.currentPlayer = "X"
+                    this.winner = "";
+
+
+                }
+            },
+
+
+        }).mount('#app');
+
+    </script>
+
+
+
+</body>
+
+</html>
